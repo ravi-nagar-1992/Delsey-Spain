@@ -1,0 +1,183 @@
+{{ 'simple-banner-content.css' | asset_url | stylesheet_tag }}
+  
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: calc({{ section.settings.padding_top }}px * 0.75);
+    padding-bottom: calc({{ section.settings.padding_bottom }}px  * 0.75);
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="master-banner">
+  <div class="section-{{ section.id }}-padding">
+  {% unless section.settings.full-width %} <div class="page-width">{% endunless %}
+     <div class="overlay-section{% if section.settings.fit_image %} fit_image{% endif %}{% if section.settings.below-image %} mobile-below_image{% endif %}">
+     <img height="" width="" loading="lazy" src="{{ section.settings.image | image_url }}" alt="Desktop Image" class="overlay-image desktop">
+      {% if section.settings.mobile_image %}
+        <img height="" width="" loading="lazy" src="{{ section.settings.mobile_image | image_url }}" alt="Mobile Image" class="overlay-image mobile{% if section.settings.reduce_height %} reduced_height{% endif %}">
+        <style>
+          .overlay-image.mobile {
+             display: none;
+            }
+          @media (max-width: 749px) {
+               .overlay-image.desktop {
+                   display: none;
+                  }
+                  .overlay-image.mobile {
+                         display: block;
+                     }
+                 }
+        </style>
+     {% endif %}
+  <div class="overlay-content">
+    <div class="overlay-text">
+      {{ section.settings.content }}
+    </div>
+     <h2>{{ section.settings.title }}</h2>
+   {% if section.settings.button_link != blank and section.settings.button_link_2 != blank %}
+     <div class="button_multi">
+    {% endif %}
+    {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+      <a href="{{ section.settings.button_link }}" class="overlay-button btn">
+        {{ section.settings.button_text }}
+      </a>
+    {% endif %}
+    {% if section.settings.button_text_2 != blank and section.settings.button_link_2 != blank %}
+      <a href="{{ section.settings.button_link_2 }}" class="overlay-button btn">
+        {{ section.settings.button_text_2 }}
+      </a>
+    {% endif %}
+     {% if section.settings.button_link != blank and section.settings.button_link_2 != blank %}
+       </div>
+    {% endif %}
+  </div>
+   </div>
+  {% unless section.settings.full-width %}</div>{% endunless %}
+ </div>
+</div>
+
+<style>
+  img.overlay-image.mobile.reduced_height {
+   object-position: {{ section.settings.image_position }};
+}
+</style>
+
+{% schema %}
+{
+  "name": "Simple Banner Content",
+  "settings": [
+    {
+          "type": "checkbox",
+          "id": "full-width",
+          "label": "Full Width",
+           "default": false
+        },
+   {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image (Optional)"
+    },
+    {
+          "type": "checkbox",
+          "id": "reduce_height",
+          "label": "Reduced Image Height On Mobile",
+           "default": false
+        },
+     {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position on Mobile",
+      "default": "center",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "center", "label": "Center" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+          "type": "checkbox",
+          "id": "fit_image",
+          "label": "Fit to screen",
+           "default": false
+        },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Your Title Here"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Your content goes here.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_text_2",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button Link"
+    },
+     {
+          "type": "checkbox",
+          "id": "below-image",
+          "label": "On Mobile Show Content Below The Image",
+           "default": false
+        },
+     {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "padding bottom",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Banner Content",
+    }
+  ]
+}
+{% endschema %}

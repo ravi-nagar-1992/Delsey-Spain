@@ -1,0 +1,27 @@
+{%- liquid
+   assign logo = logo | default: block.settings.logo
+   assign enable_social = enable_social | default: block.settings.enable_social, allow_false: true | default: true, allow_false: true
+   assign blocks_heading_size = blocks_heading_size | default: block.settings.heading_size | default: 'h4'
+-%}
+
+
+<div class="footer_newsletter">
+ {% if logo %}
+      <div class="image-wrap-logo">
+        {% assign img_url = logo | img_url: "large" %}
+        <img class="feature-row__imagelazyload" src="{{ img_url }}">
+    </div>
+      {% endif %}
+      
+       {%- if enable_social -%}
+      <div class="footer__block--mobile">
+        {% assign actions_follow_us = 'actions.follow_us' | t %}
+        <div class="footer__title">
+          {% render 't_with_fallback', t: actions_follow_us, fallback: 'Follow us' %}
+        </div>
+
+        {% render 'social-icons', wrapper_class: 'footer__social' %}
+      </div>
+    {%- endif -%}
+      
+</div>

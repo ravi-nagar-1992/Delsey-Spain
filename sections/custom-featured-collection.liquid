@@ -1,0 +1,315 @@
+{%- liquid
+    assign collection = collections[section.settings.home_featured_products]
+    assign first_collection = section.settings.home_featured_products
+    assign second_collection = section.settings.second_featured_products
+    assign third_collection = section.settings.third_featured_products
+
+    assign product_limit = section.settings.count | plus: 1
+    if section.settings.mobile_scrollable
+        assign product_limit = section.settings.count
+    endif
+-%}
+
+<script>
+    function update_buttons() {
+        let section = document.getElementById('CollectionSection-' + '{{section.id}}');
+        let collection = section.querySelector('.collection_tab:not(.collection_hidden)');
+        update_scroll_buttons(section, collection);
+    }
+
+    document.addEventListener("DOMContentLoaded", update_buttons);
+    window.addEventListener("resize", update_buttons);
+</script>
+
+{%- style -%}
+    {%- if section.settings.highlight_active -%}
+        [data-section-id={{section.id}}] .section-header__title .title_highlight::after
+        {
+            content: "";
+            background-color: {{section.settings.highlight_color}};
+            width: 100%;
+            height: 10px;
+            display: block;
+            margin: -12px auto 0 auto;
+        }
+    {%- endif -%}
+{%- endstyle -%}
+
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+    <div id="CollectionSection-{{ section.id }}" class="{{ section.settings.custom-class }}" data-section-id="{{ section.id }}"
+        data-section-type="collection-template">
+        {%- if section.settings.title != blank -%}
+        <div class="page-width main-{{ section.settings.custom-class }}">
+            <div class="section-header{% if section.settings.view_all %} section-header--with-link{% endif %} {{ section.settings.custom-class }}">
+                {%- if section.settings.subtitle != blank %}
+                    <div class="section_header_subtitle text-uppercase text_letter_spacing">
+                        {{ section.settings.subtitle }}
+                    </div>
+                {%- endif %}
+
+                <h2 class="section-header__title">
+                    {{ section.settings.title }}
+                    <div class="title_highlight"></div>
+                </h2>
+
+              {% if section.settings.description != blank %}<p class="content_feature">{{ section.settings.description }}</p> {% endif %}
+        </div>
+        </div>
+        {%- endif -%}
+
+      {%- if section.settings.home_featured_products_image != blank %}
+      <div class="page-width home_featured_products_image">
+          <img src="{{section.settings.home_featured_products_image | img_url: 'master'}}">
+      </div>  
+       {%- endif %}
+
+
+        <!-- Onglets -->
+        {%- capture collection_liste -%} 
+            {%- if section.settings.home_featured_products != blank -%}
+                {{ section.settings.home_featured_products }}
+
+                {%- if section.settings.second_featured_products != blank -%}
+                    ,{{ section.settings.second_featured_products }}
+                    
+                    {%- if section.settings.third_featured_products != blank -%}
+                        ,{{ section.settings.third_featured_products }}
+                    {%- endif -%}
+                {%- endif -%}
+            {%- endif -%}
+        {%- endcapture -%}
+
+        {%- assign collection_array = collection_liste | split: ',' | compact -%}
+
+        {%- if section.settings.show_tab == true or section.settings.scrollable == true -%}
+            <div class="page-width">
+                <ul class="collection_tabs"> 
+                    {%- if section.settings.show_tab == true -%}
+                        {%- for col in collection_array -%}
+                            {% assign col_id = col | strip %}
+                            <li class="{% if forloop.first %}collection_tab_selected{% endif %}"> 
+                                <a href="#" rel="{{ collections[col_id].url }}" onClick="change_collection(event, this, '{{ section.id }}', {{ forloop.index }})"> 
+                                    <div>
+                                        {{ collections[col_id].title }} 
+                                        <div class="title_highlight"></div>
+                                    </div>
+                                </a> 
+                            </li> 
+                        {%- endfor -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.scrollable == true -%}
+                        <li class="scroll_container">
+                            <a href="#" class="no_scroll" onclick="scroll_section_collection(event, this, '{{ section.id }}', 'left');"><div><</div></a>
+                            <a href="#" onclick="scroll_section_collection(event, this, '{{ section.id }}', 'right');"><div>></div></a>
+                        </li>
+                    {%- endif -%}
+                </ul> 
+            </div>
+        {%- endif -%}
+
+        <div class="collection-container perent-{{ section.id }}-row page-width{% if section.settings.mobile_scrollable %} page-width--flush-small{% endif %}">
+            {%- for col in collection_array -%}
+                {% assign col_id = col | strip %}
+
+                <div class="collection_tab section-{{ section.id }}-row new-grid product-grid{% if forloop.first == false %} collection_hidden{% endif %}{% if section.settings.mobile_scrollable %} scrollable-grid--small{% endif %}"
+                    data-scroll=0
+                    data-view="{% if section.settings.mobile_scrollable %}scrollable-5{% else %}xsmall{% endif %}">
+           
+                    {%- if col_id == blank or collections[col_id].empty? or collections[col_id].products_count == 0 -%}
+
+                    {%- liquid
+                    for i in (1..product_limit)
+                        unless section.settings.mobile_scrollable
+                            assign item_classes = ''
+                            if forloop.index > section.settings.count
+                            assign item_classes = 'hide'
+                            assign mod = forloop.index | modulo: 2
+                                if mod == 0
+                                    assign item_classes = 'medium-up--hide'
+                                endif
+                            endif
+                        endunless
+                        render 'onboarding-product-grid-item', i: i, classes: item_classes
+                    endfor
+                    -%}
+
+                    {%- else -%}
+
+                  {%- liquid 
+                       for product in collections[col_id].products limit: product_limit
+                      if product.available
+                        assign item_classes = ''
+                        unless section.settings.mobile_scrollable
+                            if forloop.index > section.settings.count
+                                assign item_classes = 'hide'
+                                assign mod = forloop.index | modulo: 2
+                                if mod == 0
+                                    assign item_classes = 'medium-up--hide'
+                                endif
+                            endif
+                        endunless
+
+                        render 'product-grid-item', product: product, collection: collection, classes: item_classes, show_button: section.settings.show_button
+
+                        if settings.quick_shop_enable
+                            render 'quick-shop-modal', product: product
+                        endif
+                       endif
+                    endfor
+                    -%}
+
+                    {%- endif -%}
+                </div>
+        
+            {%- endfor -%}
+
+            {%- if section.settings.view_all -%}
+                <div class="rte selection_btn">
+                    <a href="#" onclick="afficher_collection(event, '{{section.id}}', '{{collection.handle}}');" class="btn">{{ section.settings.discover_label }}</a>
+                </div>
+            {%- endif -%}
+            
+        </div>
+    </div>
+
+{%- if section.settings.divider -%}</div>{%- endif -%}
+
+{% if section.settings.centersection !=blank %}
+<style>
+@media only screen and (min-width: 1140px) {
+.section-{{ section.id }}-row {
+    justify-content: center;
+}
+.perent-{{ section.id }}-row {
+    padding-right: 40px !important;
+}  
+}  
+</style>
+{% endif %}                              
+
+{% schema %}
+{
+    "name": "Featured multi collection",
+    "class": "index-section",
+    "settings": [
+    {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Featured collection"
+    },
+    {
+        "type": "text",
+        "id": "subtitle",
+        "label": "Subtitle"
+    },
+    {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description"
+    },  
+    {
+        "type": "text",
+        "id": "discover_label",
+        "label": "Discover label",
+        "default": "View all"
+    },
+    {
+        "type": "collection",
+        "id": "home_featured_products",
+        "label": "Collection"
+    },
+    {
+        "type": "image_picker",
+        "id": "home_featured_products_image",
+        "label": "Collection Banner Image"
+    },   
+    {
+        "type": "range",
+        "id": "count",
+        "label": "Products",
+        "default": 5,
+        "min": 5,
+        "max": 30,
+        "step": 5
+    },
+      {
+        "type": "checkbox",
+        "id": "show_button",
+        "label": "Enable Add to Cart",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "mobile_scrollable",
+        "label": "Enable swipe on mobile",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "scrollable",
+        "label": "Enable scrolling",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "highlight_active",
+        "label": "Activate title highlighting",
+        "default": true
+    },
+    {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Title highlight color",
+        "default": "#E2E0DA"
+    },
+    {
+        "type": "checkbox",
+        "id": "view_all",
+        "label": "Show 'View all' link",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "divider",
+        "label": "Show section divider",
+        "default": false
+    },
+    // Option to show tabs
+    {
+        "type": "checkbox",
+        "id": "show_tab",
+        "label": "Show tabs",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "centersection",
+        "label": "Center Section",
+        "default": false
+    },  
+    // Second tab's collection
+    {
+        "type": "collection",
+        "id": "second_featured_products",
+        "label": "Second collection"
+    },
+    // Third tab's collection
+    {
+        "type": "collection",
+        "id": "third_featured_products",
+        "label": "Third collection"
+    },
+    {
+        "type": "text",
+        "id": "custom-class",
+        "label": "Custom Class"
+      }  
+    ],
+    "presets": [{
+        "name": "Featured multi collection"
+    }],
+    "blocks" : []
+}
+{% endschema %}

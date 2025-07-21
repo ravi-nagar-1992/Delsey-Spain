@@ -1,0 +1,125 @@
+.services_block {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+    border-bottom: 1px solid #656565;
+    padding-bottom: 40px;
+}
+.right_content h2 {
+    margin: 0;
+    text-align: center;
+    font-size: 18px;
+    line-height: 28px;
+    color: #fff;
+}
+.icon_services img {
+    filter: invert(1);
+    max-width: 70%;
+}
+.services_container {
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+   flex-direction: column;
+}
+.right_content p {
+    margin-top: 10px;
+    margin-bottom: 0;
+   color: #fff;
+   text-align: center;
+}
+.main-services_container .top_section p {
+    color: #fff;
+}
+.news_letter form.needsclick.klaviyo-form {
+    max-width: 650px !important;
+}
+.news_letter {
+    padding: 60px 20px 120px;
+}
+.service-newsletter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.footer__newsletter {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    flex-direction: column;
+    justify-content: center;
+}
+.service-newsletter h2, .service-newsletter h2 p {
+    margin-bottom: 0;
+}
+.our-service-newsletter form {
+    width: 100%;
+}
+.our-service-newsletter .newsletter__input-group {
+   max-width: 650px;
+    gap: 10px;
+}
+.service-newsletter p {
+    font-weight: normal;
+}
+
+@media screen and (max-width: 1150px) {
+.services_container {
+    padding: 14px;
+    gap: 16px;
+}
+}
+
+@media screen and (max-width: 1024px) {
+.services_block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+}
+
+@media screen and (max-width: 550px) {
+.services_container {
+    padding: 5px 8px;
+    gap: 10px;
+}
+.services_block {
+    gap: 10px;
+}
+.icon_services img {
+    max-width: 40px;
+}
+.right_content {
+    min-height: 90px;
+}
+.right_content h2 {
+  font-size: 16px;
+    line-height: 24px;
+}
+.news_letter {
+    padding: 40px 10px;
+}
+.right_content p {
+    margin-top: 5px;
+}
+}
+
+@media screen and (max-width: 390px) {
+  .services_container {
+    padding: 5px 10px;
+}
+  .right_content {
+    min-height: 100px;
+}
+.right_content h2 {
+  font-size: 14px;
+    line-height: 24px;
+}
+.right_content p {
+  font-size: 10px;
+}
+}

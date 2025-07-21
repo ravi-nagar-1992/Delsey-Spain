@@ -1,0 +1,218 @@
+{% # components v3.0.1 | Copyright © 2024 Archetype Themes Limited Partnership  | "Shopify Theme Store (https://www.shopify.com/legal/terms#9-additional-services)" License  %}
+{%- comment -%}
+  Renders the header cart drawer component.
+
+  Accepts:
+  - cart_notes_enable {boolean} - Enable cart notes
+  - cart_terms_conditions_enable {boolean} - Enable terms and conditions
+  - cart_terms_conditions_page {page} - Terms and conditions page
+  - cart_additional_buttons {boolean} - Additional checkout buttons
+
+  Usage:
+  {% render 'header-cart-drawer', cart_type: 'dropdown' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign cart_notes_enable = cart_notes_enable | default: settings.cart_notes_enable, allow_false: true | default: true, allow_false: true
+  assign cart_terms_conditions_enable = cart_terms_conditions_enable | default: settings.cart_terms_conditions_enable, allow_false: true | default: true, allow_false: true
+  assign cart_terms_conditions_page = cart_terms_conditions_page | default: settings.cart_terms_conditions_page
+  assign cart_additional_buttons = cart_additional_buttons | default: settings.cart_additional_buttons, allow_false: true | default: true, allow_false: true
+  assign money_format = shop.money_format
+  capture superscript
+    render 'enable-superscript'
+  endcapture
+-%}
+{%- capture close_cart_button -%}
+  <button type="button" class="site-nav__link site-nav__link--icon js-close-header-cart">
+    <span>
+      {% render 't_with_fallback', key: 'actions.close', fallback: 'Close' -%}
+    </span>
+    <span>
+      {% render 'icon', name: 'close' %}
+    </span>
+  </button>
+{%- endcapture -%}
+
+<header-cart-drawer class="cart-drawer" defer-hydration>
+  <form
+    action="{{ routes.cart_url }}"
+    method="post"
+    novalidate
+    data-location="header"
+    class="cart__drawer-form"
+    data-money-format="{{ money_format }}"
+    data-super-script="{{ superscript | strip }}"
+  >
+    <div class="panier_header">
+		<div class="site-nav__close-cart site-nav__close-cart-custom">
+			 {%- render 'close-cart', close_cart_button: close_cart_button -%}
+		</div>
+
+		<div class="panier_titre">
+			Su carrito
+		</div>
+	</div>
+                  
+    <div class="cart__scrollable">
+      <div class="reservation_information">
+		<div class="reservation_logo">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="#231F20"/>
+			</svg>
+		</div>
+		<div class="reservation_timer">Your cart is not reserved.</div>
+	</div>
+      <div data-products></div>
+
+                  {% liquid 
+		if cart.items.first.product.collections.first 
+			assign recommended_products = cart.items | map: 'product' | map: 'collections' | map: 'metafields' | map: 'recommendations' | map: 'products' | map: 'value' | compact | first
+		
+			assign min = 0
+			assign max = cart.items.first.product.collections.size
+			assign diff = max | minus: min
+			assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min
+
+			assign cart_collection = cart.items.first.product.collections[randomNumber].handle
+		else 
+			assign cart_collection = blank
+			assign recommended_products = blank
+		endif
+	%}
+                  
+      <div class="cart-recomm">{%- render 'cart-recommendations', context: 'drawer', product_collection: cart_collection, recommended_products: recommended_products -%}</div>
+
+      {% if cart_notes_enable %}
+        <div class="cart__item-row">
+          {%- render 'cart-note' -%}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="cart__footer">
+      <div class="cart__item-sub cart__item-row cart__item--subtotal">
+        {% comment %}<div>
+          {% render 't_with_fallback', key: 'labels.subtotal', fallback: 'Subtotal' %}
+        </div> {% endcomment %}
+        <div data-subtotal>{{ cart.total_price | money }}</div>
+      </div>
+
+      <div data-discounts></div>
+
+      {% if cart_terms_conditions_enable %}
+        <div class="cart__item-row cart__terms">
+          <input type="checkbox" id="CartTermsHeader" class="cart__terms-checkbox">
+          <label for="CartTermsHeader" class="text-label">
+            <small>
+              {% if cart_terms_conditions_page != blank %}
+                {% assign actions_terms_i_agree_html = 'actions.terms_i_agree_html'
+                  | t: url: cart_terms_conditions_page.url
+                %}
+                {%- capture fallback_actions_terms_i_agree_html -%}
+                I agree with the <a href='{{ cart_terms_conditions_page.url }}' target='_blank'>terms and conditions</a>
+              {%- endcapture -%}
+                {% render 't_with_fallback',
+                  t: actions_terms_i_agree_html,
+                  fallback: fallback_actions_terms_i_agree_html
+                %}
+              {% else %}
+                {% assign actions_terms_i_agree = 'actions.terms_i_agree' | t %}
+                {% render 't_with_fallback',
+                  t: actions_terms_i_agree,
+                  fallback: 'I agree with the terms and conditions'
+                %}
+              {% endif %}
+            </small>
+          </label>
+        </div>
+      {% endif %}
+
+      <div class="panier_reduction_container">
+		{% assign total_price = cart.total_price | money %}
+  
+		{% comment %}<div class="panier_message_reduction"></div> 
+ 
+		<div class="panier_reduction_barre">
+			<span class="panier_reduction_progression"></span>
+		</div>
+  {% endcomment %}
+
+		<div class="panier_reduction_recompenses">
+			<div class="tag-example tag hidden">
+				<span class="tag__text">
+					<span class="reduction-code">
+						<svg class="reduction_icon" width="32" height="32" viewBox="100 0 256 460" aria-hidden="true" focusable="false"> 
+							<path d="m394.33,105.596h-76.136c22.944-22.372 37.216-53.596 37.216-88.096 0-9.665-7.835-17.5-17.5-17.5-44.786,0-84.057,24.045-105.596,59.9-21.539-35.855-60.81-59.9-105.595-59.9-9.665,0-17.5,7.835-17.5,17.5 0,34.5 14.273,65.724 37.216,88.096h-76.137c-9.665,0-17.5,7.835-17.5,17.5v324.033c0,9.665 7.835,17.5 17.5,17.5h324.032c9.665,0 17.5-7.835 17.5-17.5v-324.033c0-9.665-7.835-17.5-17.5-17.5zm-17.5,162.016h-127.016v-127.016h127.016v127.016zm-58.646-230.385c-7.525,32.765-33.378,58.618-66.144,66.143 7.526-32.766 33.379-58.619 66.144-66.143zm-105.596,66.142c-32.765-7.525-58.618-33.378-66.143-66.143 32.765,7.525 58.618,33.378 66.143,66.143zm2.226,37.227v127.016h-127.016v-127.016h127.016zm-127.016,162.016h127.016v127.017h-127.016v-127.017zm162.016,127.016v-127.016h127.016v127.017h-127.016z"/>
+						</svg>
+						<span class="reduction-code__text"><ly-as-771446>DELSEY20</ly-as-771446></span>
+					</span>
+				</span>
+			</div>
+		</div>
+	</div>
+
+      <div class="cart__item-row cart__checkout-wrapper payment-buttons">
+        <button type="button" class="btn js-close-header-cart">
+			<span> {% render 't_with_fallback', key: 'labels.continue_shopping', fallback: 'Seguir comprando' %}</span>
+		</button>
+        <button
+          type="submit"
+          name="checkout"
+          data-terms-required="{{ cart_terms_conditions_enable }}"
+          class="btn cart__checkout"
+        >
+          {% render 't_with_fallback', key: 'actions.checkout', fallback: 'Check out' %}
+        </button>
+
+        {% if cart_type == 'dropdown' and additional_checkout_buttons and cart_additional_buttons %}
+          <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+        {% endif %}
+      </div>
+
+      <div class="cart__item-row--footer text-center">
+        <small>
+          {%- if cart.taxes_included -%}
+            {% assign info_shipping_at_checkout_taxes_included = 'info.shipping_at_checkout_taxes_included' | t %}
+            {% render 't_with_fallback',
+              t: info_shipping_at_checkout_taxes_included,
+              fallback: 'Taxes included. Shipping and discount codes calculated at checkout.'
+            %}
+          {%- else -%}
+            {% assign info_shipping_at_checkout = 'info.shipping_at_checkout' | t %}
+            {% render 't_with_fallback',
+              t: info_shipping_at_checkout,
+              fallback: 'Shipping, taxes, and discount codes calculated at checkout.'
+            %}
+          {%- endif -%}
+        </small>
+      </div>
+    </div>
+    <script type="application/json" data-locales>
+      {
+        "cartTermsConfirmation":
+          {% render 't_with_fallback', key: 'info.you_must_agree', fallback: 'You must agree with the terms and conditions of sales to check out', as_json: true -%}
+        ,
+        "cartSavings":
+          {%- assign info_save_amount = 'info.save_amount' | t: saved_amount: "[savings]" -%}
+          {%- render 't_with_fallback', t: info_save_amount, fallback: 'Save [savings]', as_json: true, as_json: true -%}
+      }
+    </script>
+  </form>
+
+  <div class="site-header__cart-empty">
+   <div class="panier_header">
+		<div class="site-nav__close-cart site-nav__close-cart-custom site-nav__close-cart-empty">
+			 {%- render 'close-cart', close_cart_button: close_cart_button -%}
+      	</div>
+
+		<div class="panier_titre">
+			Su carrito
+		</div>
+	</div>
+        <div>Su carrito actualmente está vacío.</div>
+  </div>
+</header-cart-drawer>
+
+<script type="module">
+  import 'components/header-cart-drawer'
+</script>

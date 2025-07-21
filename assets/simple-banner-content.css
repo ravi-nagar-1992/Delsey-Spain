@@ -1,0 +1,117 @@
+.overlay-section {
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+  background: #000;
+}
+
+.overlay-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0.75;
+}
+
+.overlay-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.overlay-content h2 {
+    margin: 0;
+    font-size: 40px;
+    line-height: 50px;
+    color: #fff;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.overlay-text {
+  margin-top: 10px;
+}
+.fit_image img.overlay-image.desktop {
+    height: calc(100vh - 100px);
+}
+.overlay-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 15px 25px;
+    background-color: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid #fff;
+}
+a.overlay-button.btn:hover {
+    background: #fff;
+    color: #000;
+}
+.overlay-text p {
+    text-transform: uppercase;
+    letter-spacing: .3em;
+    font-size: 1.1em;
+    color: #fff;
+}
+.button_multi {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+img.overlay-image.mobile.reduced_height {
+    max-height: 350px;
+    object-fit: cover;
+}
+
+@media (max-width: 989px) {
+  .overlay-content h2 {
+    margin: 10px 0 15px;
+    font-size: 32px;
+    line-height: 38px;
+    color: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .overlay-content {
+    width: 80%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 749px) {
+  .overlay-content h2 {
+    margin: 10px 0 10px;
+    font-size: 20px;
+    line-height: 28px;
+    color: #fff;
+}
+.mobile-below_image .overlay-content {
+    width: 100%;
+    padding: 20px 10px;
+    position: unset;
+    transform: unset;
+}
+.overlay-section.mobile-below_image {
+    background: transparent;
+}
+.mobile-below_image h2, .mobile-below_image .overlay-text p {
+  color: #000;
+}
+.overlay-section.mobile-below_image img.overlay-image.desktop, .mobile-below_image img.overlay-image.mobile {
+    height: auto;
+}
+.mobile-below_image .overlay-button {
+    border: 1px solid #000;
+    color: #000;
+}
+.button_multi {
+   gap: 10px;
+}
+.overlay-button {
+   padding: 10px 20px;
+}
+}

@@ -1,0 +1,152 @@
+.collection_card-section {
+    display: grid;
+    gap: 20px;
+}
+.collection_image img {
+    object-fit: cover;
+     height: 100%;
+     width: 100%;
+}
+.collection_image.show_horizontal {
+    max-height: 500px;
+}
+.top_section h2.second-title {
+    text-align: center;
+    padding-bottom: 30px;
+}
+.collection_image {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    line-height: 0;
+}
+.collection_card-main {
+    position: relative;
+}
+.team_info {
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    padding: 0 15px 20px;
+}
+.team_info h2 {
+    font-size: 28px;
+    color: #fff;
+    line-height: 32px;
+    margin: 0;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.team_info span.caption {
+    font-size: 12px;
+    color: #fff;
+    line-height: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.collection_image img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    opacity: 0.8;
+    min-height: 500px;
+}
+.collection_image.show_horizontal img {
+    min-height: 500px;
+}
+.team_info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+a.shop_now.btn.transparrent {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+}
+a.shop_now.btn.transparrent:hover {
+    background: #fff;
+    color: #000;
+}
+.team_info p {
+    color: #fff;
+    max-width: 580px;
+}
+.show_card_slider ul.slick-dots {
+    gap: 10px;
+    color: #fff;
+    background-color: #e4e4e4;
+    width: fit-content;
+    margin: 20px auto 40px!important;
+    padding: 10px 20px;
+    border-radius: 50px;
+}
+.show_card_slider ul.slick-dots li {
+    list-style: none;
+    margin-bottom: 0;
+}
+.show_card_slider ul.slick-dots li button {
+    display: block;
+    font-size: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 50px;
+    border: 0;
+    padding: 0;
+}
+.show_card_slider ul.slick-dots li.slick-active button {
+    background-color: #ff0;
+}
+
+@media (max-width: 1024px) {
+.team_info h2 {
+    font-size: 22px;
+    line-height: 28px;
+}
+}
+
+@media (max-width: 989px) {
+.collection_image.show_horizontal img {
+    min-height: 450px;
+}
+}
+
+@media (max-width: 749px) {
+.team_info h2 {
+     margin: 0px 0 5px;
+}
+.top_section h2.second-title {
+    padding-bottom: 30px;
+}
+.collection_image.show_horizontal img {
+    min-height: 390px;
+    max-height: 390px;
+}
+.reduced_page-width {
+    padding-right: 0;
+}
+.show_card_slider .slick-list {
+    max-height: 500px;
+    margin-left: -68px;
+}
+.show_card_slider .collection_image img {
+    min-height: 460px;
+}
+.show_card_slider .collection_image {
+    height: 460px;
+}
+.show_card_slider .slick-list .collection_card-main {
+    padding: 0 15px;
+    padding-right: 0;
+}
+.team_info h2 {
+    text-align: left;
+}
+.button_shop {
+    text-align: left;
+}
+.show_card_slider .team_info {
+    padding: 0 30px 20px;
+}
+}
