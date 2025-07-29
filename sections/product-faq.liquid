@@ -1,0 +1,97 @@
+{% if product.metafields.custom.product_faq_image != blank and product.metafields.custom.product_faq != blank %}
+{{ 'product-faq.css' | asset_url | stylesheet_tag }}
+  
+<div class="page-width">
+
+ <div class="product-faq-section"> 
+
+<div class="product-faq-img">
+{{ product.metafields.custom.product_faq_image | img_url : "master" | img_tag }}
+</div>  
+
+
+<div class="product-faq-contant">  
+  
+<div class="product-faq-contant-inner">  
+  
+  
+  {%- if section.settings.title != blank -%}
+    <header class="section-header text-left">
+      <h2 class="section-header__title">
+        {{ section.settings.title | escape }}
+      </h2>
+    </header>
+  {%- endif -%}
+
+ <div class="product-faq-row-section"> 
+   
+ {% assign productfaq = product.metafields.custom.product_faq.value %} 
+
+   {%- for faq in productfaq -%} 
+   
+  <div class="product-faq-row">
+    <button
+      type="button"
+      class="label collapsible-trigger collapsible-trigger-btn collapsible-trigger-btn--borders collapsible--auto-height"
+      aria-controls="FAQ-content-{{ forloop.index }}" aria-expanded="false"
+    >
+      <span class="collapsible-trigger__layout">
+        <span>
+          <span>{{ faq.title }}</span>
+        </span>
+        {%- render 'collapsible-icons' -%}
+      </span>
+    </button>
+    
+    <div id="FAQ-content-{{ forloop.index }}" class="collapsible-content collapsible-content--all">
+      <div class="collapsible-content__inner rte">{{ faq.description | metafield_tag }} </div>
+    </div>
+  </div>
+ {% endfor %}  
+   
+ </div> 
+  
+</div>
+</div>   
+ </div>   
+
+
+</div>
+
+{% endif %}  
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const collapsibleButtons = document.querySelectorAll(".product-faq-row .collapsible-trigger");
+
+    collapsibleButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const contentId = this.getAttribute("aria-controls");
+        const content = document.getElementById(contentId);
+        const isOpen = this.classList.contains("is-open");
+        this.classList.toggle("is-open", !isOpen);
+        content.classList.toggle("is-open", !isOpen);
+        this.setAttribute("aria-expanded", String(!isOpen));
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product FAQ",
+  "class": "index-section product-faq-section faq_section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "FAQs"
+    }
+  ],
+  "presets": [{
+    "name": "Product FAQ"
+  }]
+}
+{% endschema %}
+

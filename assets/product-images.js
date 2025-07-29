@@ -354,6 +354,7 @@ class ProductImages extends HTMLElement {
       childVertical: this.cache.thumbSlider?.dataset.position === 'beside',
       pageDots: true, // mobile only with CSS
       wrapAround: true,
+      prevNextButtons: true,
       callbacks: {
         onInit: this.onSliderInit.bind(this),
         onChange: this.onSlideChange.bind(this)

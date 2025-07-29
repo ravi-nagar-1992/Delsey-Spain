@@ -1,3 +1,5 @@
+{{ 'main-collection.css' | asset_url | stylesheet_tag }}
+
 {% # components v3.0.1 | Copyright © 2024 Archetype Themes Limited Partnership  | "Shopify Theme Store (https://www.shopify.com/legal/terms#9-additional-services)" License  %}
 {%- comment -%}
   Renders the main collection section.
@@ -19,32 +21,6 @@
   endfor
 -%}
 
-{% capture no_products %}
-  <div class="index-section">
-    {% render 't_with_fallback', key: 'info.collection_no_products', fallback: 'Sorry, there are no products in this collection.' %}
-  </div>
-{% endcapture %}
-
-{%- liquid
-  # Get product card content
-  capture product_items
-    if slot_product_items != blank
-      echo slot_product_items
-    elsif collection.products.size == 0
-      echo no_products
-    else
-      paginate collection.products by paginate_by
-        for item in collection.products
-          render 'product-grid-item', product: item
-        endfor
-
-        if paginate.pages > 1
-          render 'pagination', paginate: paginate
-        endif
-      endpaginate
-    endif
-  endcapture
--%}
 
 {%- assign grid_style = 'medium' -%}
 {%- capture collection_content -%}
@@ -53,6 +29,13 @@
   {%- else -%}
     {%- for block in section.blocks -%}
       {%- case block.type -%}
+         {%- when 'collection_header' -%}
+         <header class="section-header section-header--flush section-header-left">
+              {%- render 'breadcrumbs' -%}
+              <h1 class="section-header__title">
+                {% if block.settings.show-green %} <span class="green-dot icon icon--inventory"></span> {% endif %} {{ collection.title }}{% if collection.metafields.custom.title_trademark != blank %}{{ collection.metafields.custom.title_trademark }}{% endif %}
+              </h1>
+</header>
         {%- when 'collection_description' -%}
           <div {{ block.shopify_attributes }}>
             {%- if collection.description != blank and current_filter_size == 0 -%}
@@ -67,11 +50,7 @@
               </div>
             {%- endif -%}
           {%- endpaginate -%}
-        {%- when 'product_grid' -%}
-          {%- assign grid_style = block.settings.grid_style -%}
-          <div class="new-grid product-grid collection-grid" data-view="{{ grid_style }}" data-scroll-to>
-            {{ product_items }}
-          </div>
+       
       {%- endcase -%}
     {%- endfor -%}
   {%- endif -%}
@@ -87,6 +66,17 @@
     -%}
   </div>
 </section-main-content>
+
+{% if section.settings.show-green %}
+<style>
+  span.green-dot {
+    height: 30px;
+    border-radius: 50%;
+    position: relative;
+    width: 25px;
+}
+</style>
+  {% endif %}
 
 <script type="application/ld+json">
   {

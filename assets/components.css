@@ -5615,6 +5615,7 @@ Only medium-up because iOS jumps to top otherwise*/
 .breadcrumb {
   font-size: calc(var(--type-base-size) * 0.85);
   margin: 0 0 18px;
+  text-align: center;
 }
 
 @media only screen and (max-width: 768px) {
@@ -5626,7 +5627,7 @@ Only medium-up because iOS jumps to top otherwise*/
 
 .breadcrumb__divider {
   color: currentColor;
-  opacity: 0.2;
+  opacity: 1.2;
   padding: 0 5px;
 }
 
@@ -9046,6 +9047,7 @@ product-recommendations[data-intent='complementary'] .grid-item {
   flex-wrap: wrap;
   line-height: 25px;
   margin: 0 0 5px -4px;
+  justify-content: center;
 }
 
 .grid-product__colors + .grid-product__colors {
@@ -9053,8 +9055,8 @@ product-recommendations[data-intent='complementary'] .grid-item {
   }
 
 .grid-product__colors .color-swatch {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     border-width: 2px;
   }
 

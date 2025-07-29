@@ -8,6 +8,26 @@
       "type": "header",
       "content": "t:labels.filtering_and_sorting"
     },
+     {
+          "type": "select",
+          "id": "grid_style",
+          "label": "t:labels.default_product_layout",
+          "default": "medium",
+          "options": [
+            {
+              "value": "large",
+              "label": "t:labels.sizes.large_grid"
+            },
+            {
+              "value": "medium",
+              "label": "t:labels.sizes.small_grid"
+            },
+            {
+              "value": "list",
+              "label": "t:labels.list"
+            }
+          ]
+        },
     {
       "type": "checkbox",
       "id": "enable_sidebar",
@@ -40,32 +60,18 @@
       "name": "t:labels.collection_description",
       "limit": 1
     },
-    {
-      "type": "product_grid",
-      "name": "t:labels.products",
-      "settings": [
-        {
-          "type": "select",
-          "id": "grid_style",
-          "label": "t:labels.default_product_layout",
-          "default": "medium",
-          "options": [
-            {
-              "value": "large",
-              "label": "t:labels.sizes.large_grid"
-            },
-            {
-              "value": "medium",
-              "label": "t:labels.sizes.small_grid"
-            },
-            {
-              "value": "list",
-              "label": "t:labels.list"
-            }
-          ]
-        }
-      ],
-      "limit": 1
+     {
+      "type": "collection_header",
+      "name": "Collection Header",
+      "limit": 1,
+       "settings": [
+       {
+        "type": "checkbox",
+        "id": "show-green",
+        "label": "Show Green Dot",
+        "default": false
+      }
+       ]
     },
     {
       "type": "subcollections",

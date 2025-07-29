@@ -11,6 +11,320 @@
   {% render 'item-grid-filters', context: search %}
 {%- endcomment -%}
 
+<script>
+	// Filters to add ([ [name, value], ...])
+	filters_to_add = [];
+
+	// Call filters
+	async function add_filters()
+	{
+		const urlParams = new URLSearchParams(window.location.search);
+
+		for(let i in filters_to_add)
+		{
+			const key = filters_to_add[i][0];
+			const value = filters_to_add[i][1];
+
+			if(urlParams.getAll(key).filter(v => v === value).length > 0)
+			{
+				const tags = urlParams.getAll(key).filter(v => v !== value);
+				urlParams.delete(key);
+				for (const tag of tags) urlParams.append(key, tag);
+			}
+			else
+			{
+				urlParams.append(key, value);
+			}
+		}
+
+		window.location.search = urlParams;
+	}
+
+	// Update filters
+	function update_filters()
+	{
+		const tag_lists = document.querySelectorAll('.filter-form .tag-list');
+
+		for(let list of tag_lists)
+		{
+			let number_list = true;
+
+			let tags = list.getElementsByClassName('tag');
+			for(let tag of tags)
+			{
+				let text = tag.querySelector('.tag__text');
+				
+				if(!text || text.innerHTML.length == 0)
+				{
+					number_list = false;
+					break;
+				}
+
+				// test if text contains a number
+				if(!text.innerHTML.match(/[0-9]+/))
+				{
+					number_list = false;
+					break;
+				}
+			}
+
+			if(number_list)
+			{
+				let search = document.createElement('div');
+				search.classList.add('filter_search_ranges')
+
+				let select = document.createElement('select');
+				select.oninput = (event) => prevent(event);
+				select.onpropertychange = (event) => prevent(event);
+
+				let plus = document.createElement('option');
+				plus.innerHTML = "Plus de";
+				plus.value = "plus";
+
+				let moins = document.createElement('option');
+				moins.innerHTML = "Moins de";
+				moins.value = "moins";
+
+				select.appendChild(plus);
+				select.appendChild(moins);
+
+				let input = document.createElement('input');
+				input.type = "text";
+				input.inputmode = "numeric";
+
+				input.addEventListener("collection:reloaded", function() { setTimeout(update_paliers, 1000) });
+
+				input.oninput = (event) => prevent(event);
+				input.onpropertychange = (event) => prevent(event);
+
+				input.addEventListener('focusout', (event) => {
+					let parent_list = event.target.parentNode.parentNode.parentNode;
+					let selection = event.target.parentNode.querySelector('select').value;
+
+					let list_tags = parent_list.getElementsByClassName('tag');
+	
+					for(let tag of list_tags)
+					{
+						let text = tag.querySelector('.tag__text');
+
+						if(!text || text.innerHTML.length == 0)
+							continue;
+						
+						let number = parseFloat(text.innerHTML.replace(',', '.').match(/^[0-9]+(\.[0-9]+)?/)[0]);
+
+						if((selection == "plus" && number >= parseFloat(event.target.value))
+							|| (selection == "moins" && number <= parseFloat(event.target.value)))
+						{
+							let input = tag.querySelector('.tag__input');
+							filters_to_add.push([input.name, input.value]);
+						}
+					}
+
+					document.dispatchEvent(new Event('collection:call_filters'));
+				});
+
+				search.appendChild(select);
+				search.appendChild(input);
+
+				list.prepend(search);
+			}
+		}
+	}
+
+	function reset_filters()
+	{
+		window.location.search = window.location.search.split('?')[0];
+	}
+
+	async function unite_poids()
+	{
+		let inputs = document.querySelectorAll('[name="filter.p.m.specifications.poids"]');
+
+		for(let input of inputs)
+		{
+			let text = input.parentNode.querySelector('.tag__text');
+			let grammes = parseInt(text.innerHTML);
+			text.innerHTML = (grammes / 1000).toFixed(2) + " kg";
+		}
+	}
+
+	// Ajouter l'unité "ans" au filtre sur le nombre d'années de garantie
+	async function unite_garantie()
+	{
+		let inputs = document.querySelectorAll('[name="filter.p.m.specifications.garantie"]');
+
+		for(let input of inputs)
+		{
+			let text = input.parentNode.querySelector('.tag__text');
+			text.innerHTML += " years";
+		}
+	}
+
+	// Ajouter l'unité "roues" au filre sur le nombre de roues
+	async function unite_roues()
+	{
+		let inputs = document.querySelectorAll('[name="filter.p.m.specifications.roulettes"]');
+
+		for(let input of inputs)
+		{
+			let text = input.parentNode.querySelector('.tag__text');
+			text.innerHTML += " wheel" + (parseInt(text.innerHTML) > 1 ? "s" : "");
+		}
+	}
+
+	// Changer Oui/Non en Rigide/Non rigide
+	async function unite_type()
+	{
+		let inputs = document.querySelectorAll('[name="filter.p.m.descriptors.type"]');
+
+		for(let input of inputs)
+		{
+			let text = input.parentNode.querySelector('.tag__text');
+			text.innerHTML = input.value == 1 ? 'Hardside' : 'Not hardside';
+		}
+	}
+
+	// Activer les plages de poids depuis l'url
+	async function activer_plages_poids()
+	{
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const poids = urlParams.getAll('filter.p.m.specifications.poids');
+
+		for(const p of poids)
+		{
+			const value = parseFloat(p.match(/[0-9]+(\.[0-9]+)?/g)[0]);
+			let plage = value <= 1000 ? 'plage-specifications.poids-<-1kg' : (value > 4000 ? 'plage-specifications.poids->-4kg' : (value <= 2000 ? 'plage-specifications.poids-1-2kg' : 'plage-specifications.poids-2-4kg'));
+			document.getElementById(plage).classList.add('tag--active');
+		}
+	}
+
+	// Activer les plages de dimensions depuis l'url
+	async function activer_plages_dimensions()
+	{
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const dimensions = urlParams.getAll('filter.p.m.descriptors.dimensions');
+
+		for(const d of dimensions)
+		{
+			const value = parseFloat(d);
+			let plage = value <= 50 ? 'plage-descriptors.dimensions-<-50cm' : (value > 70 ? 'plage-descriptors.dimensions->-70cm' : (value <= 55 ? 'plage-descriptors.dimensions-50-55cm' : 'plage-descriptors.dimensions-55-70cm'));
+			document.getElementById(plage).classList.add('tag--active');
+		}
+	}
+
+	// Ajouter des plages de valeurs pour les filtres
+	async function plages_valeurs(filtre, plages)
+	{
+		// Récupérer la liste des tags
+		// const liste = document.querySelector(`.collapsible-content[data-collapsible-id="filter-${filtre}"] .tag-list`);
+		const liste = document.querySelector(`[name="filter.p.m.${filtre}"]`).parentNode.parentNode.parentNode;
+		
+		// Cacher les filtres existants
+		for(let tag of liste.getElementsByClassName('tag'))
+			tag.style.display = 'none';
+
+		// Ajouter les plages
+		for (const plage of plages) {
+	const valeurs_plage = plage.match(/[0-9]+(\.[0-9]+)?/g)?.map(valeur => parseFloat(valeur));
+
+	// Check if at least one value exists in the original tag list for this plage
+	let hasMatching = false;
+	const tags = liste.querySelectorAll('.tag:not(.tag--plage)');
+
+	for (const tag of tags) {
+		const valueText = tag.querySelector('.tag__text')?.innerHTML;
+		if (!valueText) continue;
+
+		const val = parseFloat(valueText.replace(',', '.').match(/^[0-9]+(\.[0-9]+)?/)?.[0]);
+		if (isNaN(val)) continue;
+
+		if (plage.includes('-') && val > valeurs_plage[0] && val <= valeurs_plage[1]) {
+			hasMatching = true;
+			break;
+		} else if (plage.includes('<') && val <= valeurs_plage[0]) {
+			hasMatching = true;
+			break;
+		} else if (plage.includes('>') && val > valeurs_plage[0]) {
+			hasMatching = true;
+			break;
+		}
+	}
+
+	if (!hasMatching) continue; // Skip creating this plage if no match
+
+	// Créer un nouveau tag (same as before)
+	let tag = document.createElement('li');
+	tag.classList.add('tag', 'tag--plage');
+	tag.id = 'plage-' + filtre + '-' + plage.replace(/ /g, '-');
+
+	tag.innerHTML = `
+		<input type="checkbox" class="tag__input" name="plage" value="${tag.id}">
+		<label class="tag__checkbox-wrapper text-label">
+			<span class="tag__checkbox"></span>
+			<span class="tag__text">${plage}</span> 
+		</label>
+	`;
+
+	tag.addEventListener('click', (event) => {
+		tag.classList.toggle('tag--active');
+		const selections = [];
+
+		for (const tagOrig of tags) {
+			const valueText = tagOrig.querySelector('.tag__text')?.innerHTML;
+			if (!valueText) continue;
+
+			const val = parseFloat(valueText.replace(',', '.').match(/^[0-9]+(\.[0-9]+)?/)?.[0]);
+			if (isNaN(val)) continue;
+
+			if (plage.includes('-') && val > valeurs_plage[0] && val <= valeurs_plage[1]) {
+				selections.push(tagOrig);
+			} else if (plage.includes('<') && val <= valeurs_plage[0]) {
+				selections.push(tagOrig);
+			} else if (plage.includes('>') && val > valeurs_plage[0]) {
+				selections.push(tagOrig);
+			}
+		}
+
+		selections.forEach(selection => {
+			const input = selection.querySelector('.tag__input');
+			filters_to_add.push([input.name, input.value]);
+		});
+
+		document.dispatchEvent(new Event('collection:add_filters'));
+	});
+
+	liste.appendChild(tag);
+}
+
+		
+	}
+
+	// Modifier les valeurs des différents filtres (conversion/unité)
+	function update_valeurs()
+	{
+		unite_poids();
+		unite_roues();
+		unite_garantie();
+		unite_type();
+
+		plages_valeurs('specifications.poids', [ "< 1kg", "1-2kg", "2-4kg", "> 4kg" ]);
+		plages_valeurs('descriptors.dimensions', [ "< 50cm", "50-55cm", "55-70cm", "> 70cm" ]);
+
+		activer_plages_poids();
+		activer_plages_dimensions();
+	}
+
+	document.addEventListener('collection:add_filters', add_filters);
+	// document.addEventListener("DOMContentLoaded", update_filters);
+	// document.addEventListener("collection:reloaded", update_filters);		
+	
+	document.addEventListener("collection:reloaded", update_valeurs);	
+	document.addEventListener("DOMContentLoaded", update_valeurs);	
+
+</script>
+
 {%- liquid
   assign collapse_filters = collapse_filters | default: section.settings.collapse_filters, allow_false: true | default: true, allow_false: true
   assign enable_sort = enable_sort | default: section.settings.enable_sort, allow_false: true | default: true, allow_false: true
@@ -81,7 +395,7 @@
 
     {%- assign id = location | append: '-' | append: filter_index -%}
     <div class="collection-sidebar__group--{{ filter_index }}">
-      <div class="collection-sidebar__group">
+      <div id="{{ filter_id }}s" class="collection-sidebar__group">
         {%- capture slot_collapsible -%}
           {%- case filter.type -%}
             {%- when 'list', 'boolean' -%}
@@ -117,3 +431,6 @@
     </div>
   {%- endfor -%}
 </form>
+<div class="btn filter_close_button" onclick="reset_filters()">
+					Restablecer filtros
+				</div>

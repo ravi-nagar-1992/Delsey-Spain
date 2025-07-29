@@ -1,0 +1,115 @@
+.grid-product__colors {
+    justify-content: left;
+}
+.grid-product__colors .color-swatch {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+}
+[data-view=medium] .grid-item {
+    flex: 0 0 calc(100% / 4);
+}
+.rte--collection-desc {
+    padding-top: 0;
+}
+.grid-product__title {
+    text-transform: uppercase;
+}
+.collapsible-trigger__layout--inline {
+    justify-content: space-between;
+}
+
+/* filter update css */
+#filter-colors .tag-list.tag-list--swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: 0;
+    max-height: none;
+}
+#filter-colors .tag-list.tag-list--swatches li {
+    margin: 0;
+}
+#filter-colors .tag-list.tag-list--swatches li label {
+    border: 1px solid #DCDCDC;
+    align-items: center;
+    display: flex;
+    padding: 10px 12px;
+    border-radius: 4px;
+    gap: 12px;
+    text-decoration: none;
+}
+#filter-colors  .tag--show-label {
+    width: auto;
+}
+#filter-colors .tag--swatch .color-swatch {
+    width: 22px;
+    height: 22px;
+}
+#filter-colors .tag--show-label .tag__text {
+    margin-left: 0;
+    margin-bottom: 0;
+}
+#filter-colors .tag-list.tag-list--swatches li.tag--active label {
+    border-color: #000;
+}
+#filter-colors .tag-list.tag-list--swatches li label .color-swatch {
+    margin: 0;
+    border-radius: 50px;
+    box-shadow: 0 0 0 1px #b6b6b685;
+}
+#filter-colors .tag-list.tag-list--swatches li label span.tag__text {
+    display: block !important;
+    font-weight: normal;
+}
+.filter-wrapper .tag-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+#filter-sizes .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: 0;
+    max-height: 160px;
+}
+#filter-sizes .tag-list li {
+    margin: 0;
+}
+#filter-sizes .tag-list li label {
+    border: 1px solid #DCDCDC;
+    align-items: center;
+    display: flex;
+    padding: 10px 12px;
+    border-radius: 4px;
+    gap: 10px;
+    text-decoration: none;
+    margin: 0;
+    min-width: 120px;
+    justify-content: center;
+}
+#filter-sizes .tag-list li.tag--active label {
+    border-color: #000;
+}
+#filter-sizes .tag-list li label span.tag__checkbox {
+    display: none;
+}
+#filter-sizes .tag-list li label span.tagpcount {
+    display: none;
+}
+
+@media only screen and (min-width: 769px) {
+.item-grid.item-grid .medium-up--one-fifth {
+    width: 25%;
+}
+.item-grid.item-grid .medium-up--four-fifths {
+    width: 75%;
+}
+}
+@media only screen and (max-width: 480px) {
+.grid-product__colors .color-swatch {
+    width: 18px;
+    height: 18px;
+    border-width: 1px;
+}
+}

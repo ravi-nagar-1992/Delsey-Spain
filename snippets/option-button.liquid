@@ -1,0 +1,258 @@
+{% if product.metafields.descriptors.tailles %}
+{%- liquid
+assign option_values = product.metafields.descriptors.tailles | split: ','
+assign option_selected_value = option_values | first
+-%}
+  {% endif %}
+{%- assign swatch_file_extension = 'png' -%}
+
+{%- liquid
+	assign is_size = false
+	assign size_trigger = 'products.general.size_trigger' | t | downcase
+	assign downcased_option = option_name | downcase
+
+	if downcased_option contains size_trigger or block.settings.size_chart != blank
+		assign is_size = true
+	endif
+-%}
+
+
+{%- capture size_chart_title -%}
+	<!-- {{ 'products.general.size_chart' | t }} --><svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-size-chart" viewBox="0 0 64 64"><defs><style>.a{fill:none;stroke:#000;stroke-width:2px}</style></defs><path class="a" d="M22.39 33.53c-7.46 0-13.5-3.9-13.5-8.72s6-8.72 13.5-8.72 13.5 3.9 13.5 8.72a12 12 0 0 1-.22 1.73"/><ellipse cx="22.39" cy="24.81" rx="3.28" ry="2.12"/><path class="a" d="M8.89 24.81V38.5c0 7.9 6.4 9.41 14.3 9.41h31.92V33.53H22.39M46.78 33.53v7.44M38.65 33.53v7.44M30.52 33.53v7.44M22.39 33.53v7.44"/></svg>
+{%- endcapture -%}
+
+{% capture size_guide_content %}
+  <div class='sizeGuide'>
+    <div class='sizeGuideView1'>
+      <div class='sizeGuideTitle'>Guide des tailles</div>
+      <div class='sizeGuideSubtitle'>Découvrez tous nos formats de bagages.<br>Du plus petit au plus grand.</div>
+      <div class='sizeGuideItems'>
+        <div class='sizeGuideItem'>
+          <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'S.jpg' | asset_url }}' /></div>
+          <div class='itemName'>TAILLE S</div>
+          <div class='itemSubtitle'>Pour un week-end</div>
+          <div class='itemSeeMore' onclick="showSizeGuideSize('S')">voir plus</div>
+        </div>
+        <div class='sizeGuideItem'>
+          <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'M.jpg' | asset_url }}' /></div>
+          <div class='itemName'>TAILLE M</div>
+          <div class='itemSubtitle'>1 semaine à 10 jours</div>
+          <div class='itemSeeMore' onclick="showSizeGuideSize('M')">voir plus</div>
+        </div>
+        <div class='sizeGuideItem'>
+          <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'L.jpg' | asset_url }}' /></div>
+          <div class='itemName'>TAILLE L</div>
+          <div class='itemSubtitle'>10 jours à 2 semaines</div>
+          <div class='itemSeeMore' onclick="showSizeGuideSize('L')">voir plus</div>
+        </div>
+        <div class='sizeGuideItem'>
+          <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'XL.jpg' | asset_url }}' /></div>
+          <div class='itemName'>TAILLE XL</div>
+          <div class='itemSubtitle'>2 semaines</div>
+          <div class='itemSeeMore' onclick="showSizeGuideSize('XL')">voir plus</div>
+        </div>
+        <div class='sizeGuideItem'>
+          <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'trunk.jpg' | asset_url }}' /></div>
+          <div class='itemName'>TAILLE XXL</div>
+          <div class='itemSubtitle'>Plus de 2 semaines</div>
+          <div class='itemSeeMore' onclick="showSizeGuideSize('XXL')">voir plus</div>
+        </div>
+      </div>
+    </div>
+    <div class='sizeGuideView2' hidden>
+      <div class='sizeGuideView2Container'>
+        <div class='sizeGuideBackButton' onclick="toggleSizeGuide()">< retour</div>
+        <div class='sizeGuideSizeTitles'>
+          <div class='sizeGuideSizeTitle' data-size="S" onclick="showSizeGuideSize('S')">S</div>
+          <div class='sizeGuideSizeTitle' data-size="M" onclick="showSizeGuideSize('M')">M</div>
+          <div class='sizeGuideSizeTitle' data-size="L" onclick="showSizeGuideSize('L')">L</div>
+          <div class='sizeGuideSizeTitle' data-size="XL" onclick="showSizeGuideSize('XL')">XL</div>
+          <div class='sizeGuideSizeTitle' data-size="XXL" onclick="showSizeGuideSize('XXL')">XXL</div>
+        </div>
+        <div class="sizeGuideView2Body" data-size="S" hidden>
+          <div class="sizeGuideView2Label">S</div>
+          <div class='sizeGuideHeight'>Hauteur : 55 cm</div>
+          <div class='sizeGuideItems'>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'slim.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Slim</div>
+              <div class='itemLabel'>2 TENUES</div>
+              <div class='itemDescription'>Valise cabine classique. Cette valise convient à la plupart des compagnies aériennes en tant que bagage cabine.</div>
+            </div>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'classique.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Classique</div>
+              <div class='itemLabel'>3 TENUES</div>
+              <div class='itemDescription'>Version compacte de la valise cabine. Cette valise convient à la plupart des compagnies aériennes en tant que bagage cabine.</div>
+            </div>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'extensible.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Extensible</div>
+              <div class='itemLabel'>4 TENUES</div>
+              <div class='itemDescription'>Version extensible de la valise cabine. Cette valise peut s’élargir et donc ne pas convenir comme bagage cabine auprès des compagnies aériennes.</div>
+            </div>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'business.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Business</div>
+              <div class='itemLabel'>4 TENUES + 1 ORDINATEUR</div>
+              <div class='itemDescription'>Valise cabine avec une poche avant pour l’ordinateur. Cette valise peut ne pas convenir aux compagnies aériennes en tant que bagage cabine.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sizeGuideView2Body" data-size="M" hidden>
+          <div class="sizeGuideView2Label">M</div>
+          <div class='sizeGuideHeight'>Hauteur : 65 à 70 cm</div>
+          <div class='sizeGuideItems'>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'M.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Classique</div>
+              <div class='itemLabel'>DE 6 À 10 TENUES</div>
+              <div class='itemDescription'>Cette valise peut contenir 6 à 10 tenues.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sizeGuideView2Body" data-size="L" hidden>
+          <div class="sizeGuideView2Label">L</div>
+          <div class='sizeGuideHeight'>Hauteur : 70 à 76 cm</div>
+          <div class='sizeGuideItems'>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'L.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Classique</div>
+              <div class='itemLabel'>DE 11 À 15 TENUES</div>
+              <div class='itemDescription'>Cette valise peut contenir 11 à 15 tenues.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sizeGuideView2Body" data-size="XL" hidden>
+          <div class="sizeGuideView2Label">XL</div>
+          <div class='sizeGuideHeight'>Hauteur : 77 à 82 cm</div>
+          <div class='sizeGuideItems'>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'XL.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Classique</div>
+              <div class='itemLabel'>DE 15 À 19 TENUES</div>
+              <div class='itemDescription'>Cette valise peut contenir 15 à 19 tenues.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sizeGuideView2Body" data-size="XXL" hidden>
+          <div class="sizeGuideView2Label">XXL</div>
+          <div class='sizeGuideHeight'>Trunk</div>
+          <div class='sizeGuideItems'>
+            <div class='sizeGuideItem'>
+              <div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-li="st" d-src='{{ 'trunk.jpg' | asset_url }}' /></div>
+              <div class='itemName'>Classique</div>
+              <div class='itemLabel'>PLUS DE 19 TENUES</div>
+              <div class='itemDescription'>Cette valise peut contenir plus de 19 tenues. Son format Trunk s'adapte parfaitement au voyage en voiture ou en train.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endcapture %}
+
+<div class="variant-wrapper js" data-type="button">
+	<label class="variant__label text_letter_spacing text-uppercase {% if option_name == 'Default' or option_name == 'Title' %} hidden-label{% endif %}{% unless variant_labels %} hidden-label{% endunless %} {%- if is_size -%} size-dimension{% endif %}"
+		for="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ forloop.index0 }}">
+		<div class="dimension_size">{{ option_name }}: 
+          {% if product.metafields.descriptors.dimensions %} 
+          {% assign dimensions = product.metafields.descriptors.dimensions %}
+           <div class="variant_dimensions"> {{ dimensions }}</div>
+          {% endif %}</div>
+		{%- if is_size -%}
+			<span class="variant__label-info valisize">
+             {%- render
+					'tool-tip-trigger',
+					title: size_chart_title,
+					content: size_guide_content,
+					context: 'size-chart'
+				-%}
+       </span>
+		{%- endif -%}
+		{%- if is_color -%}
+			:
+			<span class="variant__label-info valicolor">
+				<span
+					data-variant-color-label
+					data-index="{{ forloop.index0 }}"
+					data-option-index="{{ color_option_index }}">
+					{{ option_selected_value }}
+				</span>
+			</span>
+		{%- endif -%}
+	</label>
+	<div id="drop_down_select" class="drop_down_select">
+      {%- assign title_tokens = product.title | split: ' - ' -%}
+      {%- assign product_family = title_tokens | last -%}
+  
+     <label class="select-option">{{ product_family }}</label>
+     <div class="svg_show">
+       <img class="icon-svg" src="https://cdn.shopify.com/s/files/1/0645/8520/3966/files/vector_arrow.svg?v=1706516378">
+     </div>
+   </div>
+  <div id="drop_down_option" class="drop_down_option hidden_dev">
+	{% assign option_index = forloop.index %}
+	<fieldset class="variant-input-wrap wrap-{{ option_name }}"
+		name="{{ option_name }}"
+		data-index="option{{ option_index }}"
+		data-handle="{{ option_name | handleize }}"
+		id="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ forloop.index0 }}">
+		<legend class="hide">{{ option_name }}</legend>
+		{%- for option in option_values -%}
+			{%- liquid
+				assign code = option | split: ':' | first | downcase | strip
+				assign value = option | split: ':' | last | strip
+
+				assign product_available = true
+				if product.options.size == 1
+					assign product_available = product.variants[forloop.index0].available
+				endif
+
+				if skip_available 
+					assign product_available = true
+				endif
+			-%}
+			<div
+				class="variant-input"
+				data-index="option{{ option_index }}"
+				data-value="{{ value | escape | strip }}">
+				<input type="radio" form="{{ form_id }}"
+					{% if option_selected_value == value %} checked="checked"{% endif %}
+					value="{{ value | escape }}"
+					data-index="option{{ option_index }}"
+					name="{{ option_name }}"
+					data-variant-input
+					class="{% unless product_available %} disabled{% endunless %}{% if is_color %} variant__input--color-swatch{% endif %}"
+					{% if is_color %} data-color-name="{{ value | escape }}"{% endif %}
+					{% if is_color %} data-color-index="{{ color_option_index }}"{% endif %}
+					id="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ option_name | handleize }}-{{ value | url_encode }}">
+				{%- if is_color -%}
+					{%- liquid
+						assign color_file_name = value | handle | append: '.' | append: swatch_file_extension
+						assign color_image = color_file_name | file_img_url: '50x50' | prepend: 'https:' | split: '?' | first
+						assign color_swatch_fallback = value | split: ' ' | last | handle
+					-%}
+					<label
+						for="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ option_name | handleize }}-{{ value | url_encode }}"
+						class="variant__button-label color-swatch color-swatch--{{ value | handle }}{% unless product_available %} disabled{% endunless %}"
+						style="background-color: {{ color_swatch_fallback }};{% if images[color_file_name] != blank %}  background-image: url({{ color_image }});{% endif %}"
+					>
+						{{ value | escape }}
+					</label>
+				{%- else -%}
+					<label
+						for="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ option_name | handleize }}-{{ value | url_encode }}"
+						class="variant__button-label{% unless product_available %} disabled{% endunless %}">
+						{{ value | escape }}
+					</label>
+
+					<span class="hidden variant_taille_code">
+						{{ code | escape }}
+					</span>
+				{%- endif -%}
+			</div>
+		{%- endfor -%}
+	</fieldset>
+  </div>
+</div>

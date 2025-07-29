@@ -10,6 +10,8 @@
           render 'block-description', block: block
         when 'variant_picker'
           render 'block-variant-picker', block: block, forloop: forloop
+        when 'product_option'
+          render 'option-button' , block: block, forloop: forloop, option_name: 'Taille', product: product,
         when 'buy_buttons'
           render 'block-buy-buttons', block: block
         when 'price'
@@ -21,7 +23,7 @@
         when 'complementary_products'
           render 'product-complementary', block: block
         when 'sales_point'
-          render 'block-sales-point', block: block
+          render 'block-sales-point', block: block, forloop: forloop
         when 'size_chart'
           render 'block-size-chart', block: block, forloop: forloop
          when 'text'
@@ -219,6 +221,11 @@
           "type": "checkbox",
           "id": "sku_enable",
           "label": "t:actions.show_sku"
+        },
+        {
+          "type": "checkbox",
+          "id": "type_title",
+          "label": "Product Type Title"
         }
       ]
     },
@@ -276,6 +283,18 @@
       ]
     },
     {
+      "type": "product_option",
+      "name" : "Options",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id" : "show_options",
+          "label": "Enable to Show Product Option",
+          "default" : false
+        }
+      ]
+    },
+    {
       "type": "buy_buttons",
       "name": "t:labels.buy_buttons",
       "limit": 1,
@@ -329,7 +348,15 @@
     {
       "type": "price",
       "name": "t:labels.price",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+      {
+            "type": "text",
+            "id": "custom_text",
+            "label": "Free delivery",
+            "default": "Free delivery from 99€"
+          }
+      ]
     },
     {
       "type": "quantity_selector",
@@ -468,11 +495,24 @@
           ]
         },
         {
-          "type": "text",
+          "type": "liquid",
           "id": "text",
           "label": "t:labels.text",
           "default": "Free worldwide shipping"
-        }
+        },
+        { "type": "url", 
+          "id": "url",
+          "label": "url" 
+        }, 
+         {
+            "type": "range",
+            "id": "shipping_days",
+            "label": "Shipping days",
+            "default": 3,
+            "min": 0,
+            "max": 30,
+            "step": 1
+          }
       ]
     },
     {
@@ -514,6 +554,11 @@
       "type": "tab",
       "name": "t:labels.tab",
       "settings": [
+         {
+          "type": "checkbox",
+          "id": "open_tab",
+          "label": "Open Tab"
+        },
         {
           "type": "text",
           "id": "title",
@@ -526,6 +571,11 @@
           "label": "t:labels.tab_content",
           "default": "<p>Use collapsible tabs for more detailed information that will help customers make a purchasing decision.</p><p>Ex: Shipping and return policies, size guides, and other common questions.</p>"
         },
+         {
+            "type": "liquid",
+            "id": "tabhtml",
+            "label": "HTML"            
+          },
         {
           "type": "page",
           "id": "page",

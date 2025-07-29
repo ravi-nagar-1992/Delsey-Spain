@@ -46,6 +46,7 @@
 -%}
 
 {%- if product -%}
+   {%- render 'breadcrumbs' -%}
   <product-images
     data-product-images
     data-zoom="{{ product_zoom_enable }}"
@@ -117,7 +118,8 @@
               class="product__thumb-arrow product__thumb-arrow--prev hide"
               aria-label="{%- render 't_with_fallback', key: 'actions.previous', fallback: 'Previous' -%}"
             >
-              {% render 'icon', name: 'chevron-left' %}
+              {% comment %}{% render 'icon', name: 'chevron-left' %} {% endcomment %}
+              <img src="{{ 'black_arrows.svg' | asset_url }}" />
             </button>
           {%- endif -%}
 
@@ -170,7 +172,7 @@
                         render 'image-element',
                         img: media.preview_image,
                         alt: media.alt | escape | split: '#' | first,
-                        widths: '120, 360, 540, 720',
+                        widths: '540, 640, 740, 820',
                         sizeVariable: '80px',
                         loading: loading,
                       -%}
@@ -187,7 +189,8 @@
               class="product__thumb-arrow product__thumb-arrow--next"
               aria-label="{% render 't_with_fallback', key: 'actions.next', fallback: 'Next' -%}"
             >
-              {% render 'icon', name: 'chevron-right' %}
+            {% comment %}  {% render 'icon', name: 'chevron-right' %} {% endcomment %}
+             <img src="{{ 'black_arrows.svg' | asset_url }}" />
             </button>
           {%- endif -%}
         </div>

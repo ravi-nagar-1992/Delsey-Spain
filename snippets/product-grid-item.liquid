@@ -365,9 +365,21 @@
                 {{ product.metafields.archetype.prefix.value | escape }}
               </div>
             {%- endif -%}
+
+            {%- assign title_tokens = product.title | split: ' - ' -%}
+          {%- assign product_family = title_tokens | first -%}
+          {%- assign product_title = product.type -%}
+          {%- assign product_size = title_tokens | last -%}
+          {%- assign lim = title_tokens | size | minus: 2 -%}
+
+          {%- for token in title_tokens offset: 1 limit: lim -%}
+            {%- capture product_title -%} 
+                                {{ product_title }} - {{ token }}
+                            {%- endcapture -%}
+          {%- endfor -%}
             
             <div class="grid_product_type">{{ product_family }}</div>
-            <div class="grid-product__title">{{ product.title }}</div>
+            <div class="grid-product__title">{{ product_title }}</div>
             
             {% if title_tokens.size > 1 %}
             <div class="grid-product__size">{{ product_size }}</div>

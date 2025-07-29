@@ -71,7 +71,7 @@
 
         {%- if related_collection.products_count > 0 -%}
           <div class="product-recommendations page-width">
-            <div class="new-grid product-grid scrollable-grid--small" {%- render 'grid-view-type' -%}>
+            <div class="new-grid product-grid scrollable-grid--small product_recommendation_slider" {%- render 'grid-view-type' -%}>
               {%- for product in related_collection.products -%}
                 {%- render 'product-grid-item', product: product, sizeVariable: products_per_row, fallback: '45vw' -%}
               {%- endfor -%}

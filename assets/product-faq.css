@@ -1,0 +1,35 @@
+.product-faq-section {
+    display: flex;
+    gap: 40px;
+}
+.product-faq-img {
+    width: 45%;
+}
+.product-faq-contant {
+    width: 55%;
+}
+.product-faq-contant header.section-header {
+    margin-bottom: 20px;
+}
+.product-faq-contant-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+.product-faq-section .page-width {
+    max-width: 1200px;
+}
+
+@media screen and (max-width: 768px) {
+.product-faq-section {
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.product-faq-img, .product-faq-contant {
+    width: 100%;
+}  
+.product-faq-row .collapsible-content__inner {
+    padding: 0 0px 12px;
+}  
+}

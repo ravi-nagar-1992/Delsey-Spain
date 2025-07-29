@@ -23,13 +23,46 @@
   assign collection_for_vendor = collections[collection_handle]
   assign vendor_url_default = product.vendor | url_for_vendor
   assign vendor_url = collection_for_vendor.url | default: vendor_url_default
+  assign type_title = block.settings.type_title
 -%}
 
-<div class="product-block" data-section-id="{{ section.id }}" {{ block.shopify_attributes }}>
-  <h1 class="h2 product-single__title">
+ {%- assign title_tokens = product.title | split: ' - ' -%}
+  {%- assign product_family = title_tokens | first -%}
+  {%- assign product_title = product.type -%}
+
+  {%- for token in title_tokens offset: 1 -%}
+    {%- capture product_title -%} 
+				{{ product_title }} - {{ token }}
+			{%- endcapture -%}
+  {%- endfor -%}
+
+<div class="product-block product_titleblock" data-section-id="{{ section.id }}" {{ block.shopify_attributes }}>
+ 
+  {% if type_title %}
+ <div class="product_single_type text_letter_spacing text-uppercase">
+					{%- unless product.empty? -%}
+						{{ product_family }}
+					{%- endunless -%}
+				</div>
+				<h1 class="h2 product-single__title text-uppercase">
+					{%- unless product.empty? -%}
+						{{ product_title }}
+					{%- else -%}
+						product title
+					{%- endunless -%}
+				</h1>
+  <div class="product_single_subtitle">
+					{%- unless product.empty? -%}
+						{{ product.metafields.descriptors.subtitle }}
+					{%- endunless -%}
+				</div>
+  {% else %}
+     <h1 class="h2 product-single__title">
     {{- title -}}
   </h1>
-
+  {% endif %}
+  
+  <span class="product_sku">SKU: {{ product.selected_or_first_available_variant.sku }}</span>
   {%- if vendor_enable or sku_enable -%}
     <div class="product-single__vendor-sku">
       {%- if vendor_enable -%}
